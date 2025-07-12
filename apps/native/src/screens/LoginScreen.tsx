@@ -29,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (isSignedIn) {
-      navigation.navigate("NotesDashboardScreen");
+      navigation.navigate("MainTabs");
     }
   }, [userLoaded, authLoaded, isSignedIn, user]);
 
@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
 
         if (createdSessionId) {
           await setActive({ session: createdSessionId });
-          navigation.navigate("NotesDashboardScreen");
+          navigation.navigate("MainTabs");
         } else {
           // Handle sign-up flow for new users
           if (signUp && signUp.status === "missing_requirements") {
@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
 
                 if (newSessionId) {
                   await setActive({ session: newSessionId });
-                  navigation.navigate("NotesDashboardScreen");
+                  navigation.navigate("MainTabs");
                 }
               } catch (updateError) {
                 Alert.alert(
@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation }) => {
 
                 if (newSessionId) {
                   await setActive({ session: newSessionId });
-                  navigation.navigate("NotesDashboardScreen");
+                  navigation.navigate("MainTabs");
                 }
               } catch (signUpError) {
                 // Sign-up error handled silently
@@ -103,7 +103,7 @@ const LoginScreen = ({ navigation }) => {
 
         if (createdSessionId) {
           await setActive({ session: createdSessionId });
-          navigation.navigate("NotesDashboardScreen");
+          navigation.navigate("MainTabs");
         }
       }
     } catch (err) {
