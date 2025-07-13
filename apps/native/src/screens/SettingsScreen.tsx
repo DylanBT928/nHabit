@@ -74,9 +74,6 @@ export default function SettingsScreen({ navigation }) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.title}>Settings</Text>
-          <Text style={styles.subtitle}>
-            Manage your account and preferences
-          </Text>
         </View>
 
         {/* User Profile Section */}
@@ -167,7 +164,7 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#172F50", // Primary Deep Navy
+    backgroundColor: "#0E87E2", // Blue background
   },
   header: {
     paddingHorizontal: 20,

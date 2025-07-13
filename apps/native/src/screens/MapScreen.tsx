@@ -142,7 +142,7 @@ export default function MapScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F7F7",
+    backgroundColor: "#0E87E2", // Blue background
   },
   mapContainer: {
     flex: 1,
