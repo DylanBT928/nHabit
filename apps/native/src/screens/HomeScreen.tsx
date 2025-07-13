@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,6 +8,8 @@ import {
   Dimensions,
   Alert,
   ScrollView,
+  TextInput,
+  Modal,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
@@ -15,101 +17,197 @@ import { AntDesign } from "@expo/vector-icons";
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
-  const handleInviteMember = () => {
-    Alert.alert(
-      "Invite Family Member",
-      "Send an invitation to add a family member to your circle.",
-      [{ text: "OK" }],
-    );
+  const [places, setPlaces] = useState([
+    { id: 1, name: "Gym", type: "visit" },
+    { id: 2, name: "McDonald's", type: "avoid" },
+  ]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newPlaceName, setNewPlaceName] = useState("");
+  const [selectedType, setSelectedType] = useState("visit");
+
+  const addPlace = () => {
+    if (newPlaceName.trim()) {
+      const newPlace = {
+        id: Date.now(),
+        name: newPlaceName.trim(),
+        type: selectedType,
+      };
+      setPlaces([...places, newPlace]);
+      setNewPlaceName("");
+      setModalVisible(false);
+    }
   };
 
-  const handleViewLocation = () => {
-    Alert.alert(
-      "View Location",
-      "This will show detailed location information for a family member.",
-      [{ text: "OK" }],
-    );
+  const removePlace = (id) => {
+    Alert.alert("Remove Place", "Are you sure you want to remove this place?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Remove",
+        style: "destructive",
+        onPress: () => setPlaces(places.filter((place) => place.id !== id)),
+      },
+    ]);
   };
 
-  const handleViewAllActivity = () => {
-    Alert.alert(
-      "View All Activity",
-      "This will show all recent location activity for your family.",
-      [{ text: "OK" }],
-    );
-  };
+  const visitPlaces = places.filter((place) => place.type === "visit");
+  const avoidPlaces = places.filter((place) => place.type === "avoid");
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.title}>Family Circle</Text>
-          <Text style={styles.subtitle}>
-            Stay connected with your loved ones
-          </Text>
+          <Text style={styles.title}>Habits</Text>
         </View>
 
-        <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Today's Activity</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>0</Text>
-              <Text style={styles.statLabel}>Family Members</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>0</Text>
-              <Text style={styles.statLabel}>Places Added</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>0</Text>
-              <Text style={styles.statLabel}>Recent Updates</Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            style={styles.viewAllButton}
-            onPress={handleViewAllActivity}
-          >
-            <Text style={styles.viewAllButtonText}>View All Activity</Text>
-            <AntDesign name="arrowright" size={16} color="#6D8AAF" />
-          </TouchableOpacity>
-        </View>
+        {/* Add Place Button */}
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => setModalVisible(true)}
+        >
+          <AntDesign name="plus" size={24} color="#FFFFFF" />
+          <Text style={styles.addButtonText}>Add Place</Text>
+        </TouchableOpacity>
 
-        <View style={styles.habitsSection}>
+        {/* Visit Places Section */}
+        <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Family Members</Text>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleInviteMember}
-            >
-              <AntDesign name="plus" size={20} color="#F7F7F7" />
-            </TouchableOpacity>
+            <View style={styles.sectionIndicator}>
+              <View style={[styles.indicator, styles.visitIndicator]} />
+              <Text style={styles.sectionTitle}>Places to Visit</Text>
+            </View>
+            <Text style={styles.sectionCount}>{visitPlaces.length}</Text>
           </View>
 
-          <View style={styles.emptyState}>
-            <AntDesign name="team" size={48} color="#6D8AAF" />
-            <Text style={styles.emptyStateTitle}>No family members yet</Text>
-            <Text style={styles.emptyStateText}>
-              Start your family circle by inviting your first member
-            </Text>
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleInviteMember}
-            >
-              <Text style={styles.primaryButtonText}>Invite First Member</Text>
-            </TouchableOpacity>
-          </View>
+          {visitPlaces.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyText}>No places to visit yet</Text>
+            </View>
+          ) : (
+            visitPlaces.map((place) => (
+              <View key={place.id} style={[styles.placeCard, styles.visitCard]}>
+                <View style={styles.placeInfo}>
+                  <Text style={styles.placeName}>{place.name}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => removePlace(place.id)}
+                  style={styles.removeButton}
+                >
+                  <AntDesign name="close" size={20} color="#666" />
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
         </View>
 
-        <View style={styles.recentActivity}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <View style={styles.activityCard}>
-            <Text style={styles.activityText}>No recent activity</Text>
-            <Text style={styles.activitySubtext}>
-              Family location updates and notifications will appear here
-            </Text>
+        {/* Avoid Places Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionIndicator}>
+              <View style={[styles.indicator, styles.avoidIndicator]} />
+              <Text style={styles.sectionTitle}>Places to Avoid</Text>
+            </View>
+            <Text style={styles.sectionCount}>{avoidPlaces.length}</Text>
           </View>
+
+          {avoidPlaces.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyText}>No places to avoid yet</Text>
+            </View>
+          ) : (
+            avoidPlaces.map((place) => (
+              <View key={place.id} style={[styles.placeCard, styles.avoidCard]}>
+                <View style={styles.placeInfo}>
+                  <Text style={styles.placeName}>{place.name}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => removePlace(place.id)}
+                  style={styles.removeButton}
+                >
+                  <AntDesign name="close" size={20} color="#666" />
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
+
+      {/* Add Place Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add New Place</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter place name"
+              value={newPlaceName}
+              onChangeText={setNewPlaceName}
+              autoFocus
+            />
+
+            {/* Type Selection */}
+            <View style={styles.typeSelection}>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  styles.visitButton,
+                  selectedType === "visit" && styles.selectedTypeButton,
+                ]}
+                onPress={() => setSelectedType("visit")}
+              >
+                <Text
+                  style={[
+                    styles.typeButtonText,
+                    selectedType === "visit" && styles.selectedTypeText,
+                  ]}
+                >
+                  Visit
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  styles.avoidButton,
+                  selectedType === "avoid" && styles.selectedTypeButton,
+                ]}
+                onPress={() => setSelectedType("avoid")}
+              >
+                <Text
+                  style={[
+                    styles.typeButtonText,
+                    selectedType === "avoid" && styles.selectedTypeText,
+                  ]}
+                >
+                  Avoid
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Modal Actions */}
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => {
+                  setModalVisible(false);
+                  setNewPlaceName("");
+                }}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.confirmButton} onPress={addPlace}>
+                <Text style={styles.confirmButtonText}>Add Place</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -120,137 +218,212 @@ const styles = StyleSheet.create({
     backgroundColor: "#0E87E2", // Blue background
   },
   header: {
+    alignItems: "center",
+    paddingVertical: 30,
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
   },
   title: {
     fontSize: RFValue(28),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
-    marginBottom: 4,
+    color: "#FFFFFF",
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: RFValue(16),
+    color: "#FFFFFF",
     fontFamily: "Regular",
-    color: "#C8D2E0", // Lightest Blue
+    textAlign: "center",
+    opacity: 0.9,
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 20,
+    marginBottom: 30,
+    paddingVertical: 16,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  addButtonText: {
+    fontSize: RFValue(16),
+    fontFamily: "SemiBold",
+    color: "#0E87E2",
+    marginLeft: 8,
+  },
+  section: {
+    marginBottom: 30,
+    paddingHorizontal: 20,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  sectionIndicator: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  indicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 12,
+  },
+  visitIndicator: {
+    backgroundColor: "#28A745",
+  },
+  avoidIndicator: {
+    backgroundColor: "#DC3545",
   },
   sectionTitle: {
     fontSize: RFValue(20),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
-    marginBottom: 16,
+    color: "#FFFFFF",
   },
-  statsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 16,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: "#F7F7F7", // Extra Light Gray
-    borderRadius: 16,
-    padding: 16,
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: RFValue(24),
-    fontFamily: "SemiBold",
-    color: "#3D3D3D", // Extra Dark Gray
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: RFValue(12),
-    fontFamily: "Regular",
-    color: "#7A7A7A", // Dark Gray
-    textAlign: "center",
-  },
-  viewAllButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 12,
-  },
-  viewAllButtonText: {
-    fontSize: RFValue(14),
-    fontFamily: "SemiBold",
-    color: "#6D8AAF", // Lighter Blue
-  },
-  habitsSection: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  addButton: {
-    backgroundColor: "#0F1E35", // Dark Blue
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
+  sectionCount: {
+    fontSize: RFValue(16),
+    fontFamily: "Medium",
+    color: "#FFFFFF",
+    opacity: 0.8,
   },
   emptyState: {
-    backgroundColor: "#F7F7F7", // Extra Light Gray
-    borderRadius: 16,
-    padding: 32,
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: RFValue(14),
+    color: "#FFFFFF",
+    opacity: 0.7,
+    fontFamily: "Regular",
+  },
+  placeCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    marginBottom: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  visitCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#28A745",
+  },
+  avoidCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#DC3545",
+  },
+  placeInfo: {
+    flex: 1,
+  },
+  placeName: {
+    fontSize: RFValue(16),
+    fontFamily: "SemiBold",
+    color: "#333",
+  },
+  removeButton: {
+    padding: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
     alignItems: "center",
   },
-  emptyStateTitle: {
-    fontSize: RFValue(18),
-    fontFamily: "SemiBold",
-    color: "#3D3D3D", // Extra Dark Gray
-    marginTop: 16,
-    marginBottom: 8,
+  modalContent: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 24,
+    width: width - 40,
+    maxWidth: 400,
   },
-  emptyStateText: {
-    fontSize: RFValue(14),
-    fontFamily: "Regular",
-    color: "#7A7A7A", // Dark Gray
+  modalTitle: {
+    fontSize: RFValue(20),
+    fontFamily: "SemiBold",
+    color: "#333",
     textAlign: "center",
     marginBottom: 24,
-    lineHeight: 20,
   },
-  primaryButton: {
-    backgroundColor: "#0F1E35", // Dark Blue
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-  },
-  primaryButtonText: {
+  input: {
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+    borderRadius: 8,
+    padding: 16,
     fontSize: RFValue(16),
-    fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
+    fontFamily: "Regular",
+    marginBottom: 24,
   },
-  recentActivity: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
+  typeSelection: {
+    flexDirection: "row",
+    marginBottom: 24,
+    gap: 12,
   },
-  activityCard: {
-    backgroundColor: "#F7F7F7", // Extra Light Gray
-    borderRadius: 16,
-    padding: 20,
+  typeButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 2,
     alignItems: "center",
   },
-  activityText: {
+  visitButton: {
+    borderColor: "#28A745",
+    backgroundColor: "#F8F9FA",
+  },
+  avoidButton: {
+    borderColor: "#DC3545",
+    backgroundColor: "#F8F9FA",
+  },
+  selectedTypeButton: {
+    backgroundColor: "#0E87E2",
+    borderColor: "#0E87E2",
+  },
+  typeButtonText: {
     fontSize: RFValue(16),
     fontFamily: "SemiBold",
-    color: "#3D3D3D", // Extra Dark Gray
-    marginBottom: 4,
+    color: "#666",
   },
-  activitySubtext: {
-    fontSize: RFValue(14),
-    fontFamily: "Regular",
-    color: "#7A7A7A", // Dark Gray
-    textAlign: "center",
+  selectedTypeText: {
+    color: "#FFFFFF",
+  },
+  modalActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+    alignItems: "center",
+  },
+  cancelButtonText: {
+    fontSize: RFValue(16),
+    fontFamily: "SemiBold",
+    color: "#666",
+  },
+  confirmButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: "#0E87E2",
+    alignItems: "center",
+  },
+  confirmButtonText: {
+    fontSize: RFValue(16),
+    fontFamily: "SemiBold",
+    color: "#FFFFFF",
   },
 });
