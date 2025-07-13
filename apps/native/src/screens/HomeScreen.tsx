@@ -15,26 +15,26 @@ import { AntDesign } from "@expo/vector-icons";
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
-  const handleAddHabit = () => {
+  const handleInviteMember = () => {
     Alert.alert(
-      "Add Habit",
-      "This feature will allow you to add new habits to track.",
+      "Invite Family Member",
+      "Send an invitation to add a family member to your circle.",
       [{ text: "OK" }],
     );
   };
 
-  const handleViewHabit = () => {
+  const handleViewLocation = () => {
     Alert.alert(
-      "View Habit",
-      "This will show detailed information about your habit progress.",
+      "View Location",
+      "This will show detailed location information for a family member.",
       [{ text: "OK" }],
     );
   };
 
-  const handleViewAllStats = () => {
+  const handleViewAllActivity = () => {
     Alert.alert(
-      "View All Stats",
-      "This will show comprehensive statistics about all your habits.",
+      "View All Activity",
+      "This will show all recent location activity for your family.",
       [{ text: "OK" }],
     );
   };
@@ -43,54 +43,59 @@ export default function HomeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.title}>My Habits</Text>
-          <Text style={styles.subtitle}>Track your daily progress</Text>
+          <Text style={styles.title}>Family Circle</Text>
+          <Text style={styles.subtitle}>
+            Stay connected with your loved ones
+          </Text>
         </View>
 
         <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Today's Overview</Text>
+          <Text style={styles.sectionTitle}>Today's Activity</Text>
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
               <Text style={styles.statNumber}>0</Text>
-              <Text style={styles.statLabel}>Habits Completed</Text>
+              <Text style={styles.statLabel}>Family Members</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statNumber}>0</Text>
-              <Text style={styles.statLabel}>Active Habits</Text>
+              <Text style={styles.statLabel}>Places Added</Text>
             </View>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>0%</Text>
-              <Text style={styles.statLabel}>Success Rate</Text>
+              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statLabel}>Recent Updates</Text>
             </View>
           </View>
           <TouchableOpacity
             style={styles.viewAllButton}
-            onPress={handleViewAllStats}
+            onPress={handleViewAllActivity}
           >
-            <Text style={styles.viewAllButtonText}>View All Stats</Text>
+            <Text style={styles.viewAllButtonText}>View All Activity</Text>
             <AntDesign name="arrowright" size={16} color="#6D8AAF" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.habitsSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>My Habits</Text>
-            <TouchableOpacity style={styles.addButton} onPress={handleAddHabit}>
+            <Text style={styles.sectionTitle}>Family Members</Text>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={handleInviteMember}
+            >
               <AntDesign name="plus" size={20} color="#F7F7F7" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.emptyState}>
-            <AntDesign name="calendar" size={48} color="#6D8AAF" />
-            <Text style={styles.emptyStateTitle}>No habits yet</Text>
+            <AntDesign name="team" size={48} color="#6D8AAF" />
+            <Text style={styles.emptyStateTitle}>No family members yet</Text>
             <Text style={styles.emptyStateText}>
-              Start building better habits by adding your first one
+              Start your family circle by inviting your first member
             </Text>
             <TouchableOpacity
               style={styles.primaryButton}
-              onPress={handleAddHabit}
+              onPress={handleInviteMember}
             >
-              <Text style={styles.primaryButtonText}>Add Your First Habit</Text>
+              <Text style={styles.primaryButtonText}>Invite First Member</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -100,7 +105,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.activityCard}>
             <Text style={styles.activityText}>No recent activity</Text>
             <Text style={styles.activitySubtext}>
-              Your habit tracking activity will appear here
+              Family location updates and notifications will appear here
             </Text>
           </View>
         </View>

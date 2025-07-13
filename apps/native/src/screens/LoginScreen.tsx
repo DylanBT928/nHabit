@@ -133,8 +133,8 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.card}>
               <Text style={styles.title}>Welcome Back</Text>
               <Text style={styles.subtitle}>
-                Track your habits, discover patterns, and build better routines
-                through smart location insights.
+                Stay connected with your family and friends through secure
+                location sharing.
               </Text>
 
               <View style={styles.buttonContainer}>
@@ -167,7 +167,7 @@ const LoginScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.signupContainer}>
-                <Text style={styles.signupText}>New to nHabit? </Text>
+                <Text style={styles.signupText}>New user? </Text>
                 <Text style={styles.signupLink}>Get started above.</Text>
               </View>
             </View>
