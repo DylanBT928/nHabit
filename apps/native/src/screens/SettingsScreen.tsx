@@ -37,6 +37,14 @@ export default function SettingsScreen({ navigation }) {
     ]);
   };
 
+  const handleProfile = () => {
+    Alert.alert(
+      "Profile",
+      "Profile settings will be available in a future update.",
+      [{ text: "OK" }],
+    );
+  };
+
   const handleNotifications = () => {
     Alert.alert(
       "Notifications",
@@ -45,18 +53,26 @@ export default function SettingsScreen({ navigation }) {
     );
   };
 
-  const handlePrivacy = () => {
+  const handlePrivacyData = () => {
     Alert.alert(
-      "Privacy",
-      "Privacy settings and data management options coming soon.",
+      "Privacy & Data",
+      "Privacy and data settings will be available in a future update.",
       [{ text: "OK" }],
     );
   };
 
-  const handleSupport = () => {
+  const handleRateReview = () => {
     Alert.alert(
-      "Support",
-      "Need help? Contact our support team at support@nhabit.app",
+      "Rate & Review",
+      "Thank you for your interest! Please rate us on the App Store.",
+      [{ text: "OK" }],
+    );
+  };
+
+  const handleHelp = () => {
+    Alert.alert(
+      "Help",
+      "Help and support resources will be available in a future update.",
       [{ text: "OK" }],
     );
   };
@@ -64,7 +80,15 @@ export default function SettingsScreen({ navigation }) {
   const handleAbout = () => {
     Alert.alert(
       "About nHabit",
-      "nHabit v1.0.0\nGeolocation-based habit tracking\n\nBuild better habits through smart location insights.",
+      "nHabit helps you build better habits by tracking places you want to visit or avoid.",
+      [{ text: "OK" }],
+    );
+  };
+
+  const handlePremium = () => {
+    Alert.alert(
+      "Premium Membership",
+      "Premium features will be available soon!",
       [{ text: "OK" }],
     );
   };
@@ -72,90 +96,111 @@ export default function SettingsScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Settings</Text>
         </View>
 
-        {/* User Profile Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Profile</Text>
-          <View style={styles.profileCard}>
-            <View style={styles.avatarContainer}>
-              <AntDesign name="user" size={32} color="#6D8AAF" />
-            </View>
-            <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>
-                {user?.fullName ||
-                  user?.emailAddresses?.[0]?.emailAddress ||
-                  "User"}
-              </Text>
-              <Text style={styles.profileEmail}>
-                {user?.emailAddresses?.[0]?.emailAddress || "No email"}
-              </Text>
-            </View>
-          </View>
+        {/* Premium Membership Card */}
+        <View style={styles.premiumCard}>
+          <Text style={styles.premiumTitle}>Premium Membership</Text>
+          <Text style={styles.premiumSubtitle}>Upgrade for more features</Text>
+          <TouchableOpacity
+            style={styles.premiumButton}
+            onPress={handlePremium}
+          >
+            <Text style={styles.premiumButtonText}>Learn More</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* App Settings Section */}
+        {/* Settings Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>App Settings</Text>
+          <Text style={styles.sectionTitle}>Settings</Text>
           <View style={styles.settingsGroup}>
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={handleProfile}
+            >
+              <View style={styles.settingLeft}>
+                <AntDesign name="user" size={20} color="#666" />
+                <Text style={styles.settingText}>Profile</Text>
+              </View>
+              <AntDesign name="right" size={16} color="#666" />
+            </TouchableOpacity>
+
+            <View style={styles.separator} />
+
             <TouchableOpacity
               style={styles.settingItem}
               onPress={handleNotifications}
             >
               <View style={styles.settingLeft}>
-                <AntDesign name="notification" size={20} color="#6D8AAF" />
+                <AntDesign name="notification" size={20} color="#666" />
                 <Text style={styles.settingText}>Notifications</Text>
               </View>
-              <AntDesign name="right" size={16} color="#7A7A7A" />
+              <AntDesign name="right" size={16} color="#666" />
             </TouchableOpacity>
+
+            <View style={styles.separator} />
 
             <TouchableOpacity
               style={styles.settingItem}
-              onPress={handlePrivacy}
+              onPress={handlePrivacyData}
             >
               <View style={styles.settingLeft}>
-                <AntDesign name="lock" size={20} color="#6D8AAF" />
+                <AntDesign name="lock" size={20} color="#666" />
                 <Text style={styles.settingText}>Privacy & Data</Text>
               </View>
-              <AntDesign name="right" size={16} color="#7A7A7A" />
+              <AntDesign name="right" size={16} color="#666" />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Support Section */}
+        {/* More Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support & Info</Text>
+          <Text style={styles.sectionTitle}>More</Text>
           <View style={styles.settingsGroup}>
             <TouchableOpacity
               style={styles.settingItem}
-              onPress={handleSupport}
+              onPress={handleRateReview}
             >
               <View style={styles.settingLeft}>
-                <AntDesign name="customerservice" size={20} color="#6D8AAF" />
-                <Text style={styles.settingText}>Help & Support</Text>
+                <AntDesign name="star" size={20} color="#666" />
+                <Text style={styles.settingText}>Rate & Review</Text>
               </View>
-              <AntDesign name="right" size={16} color="#7A7A7A" />
+              <AntDesign name="right" size={16} color="#666" />
             </TouchableOpacity>
+
+            <View style={styles.separator} />
+
+            <TouchableOpacity style={styles.settingItem} onPress={handleHelp}>
+              <View style={styles.settingLeft}>
+                <AntDesign name="questioncircle" size={20} color="#666" />
+                <Text style={styles.settingText}>Help</Text>
+              </View>
+              <AntDesign name="right" size={16} color="#666" />
+            </TouchableOpacity>
+
+            <View style={styles.separator} />
 
             <TouchableOpacity style={styles.settingItem} onPress={handleAbout}>
               <View style={styles.settingLeft}>
-                <AntDesign name="infocirlce" size={20} color="#6D8AAF" />
+                <AntDesign name="infocirlce" size={20} color="#666" />
                 <Text style={styles.settingText}>About nHabit</Text>
               </View>
-              <AntDesign name="right" size={16} color="#7A7A7A" />
+              <AntDesign name="right" size={16} color="#666" />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Logout Section */}
-        <View style={styles.section}>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <AntDesign name="logout" size={20} color="#F7F7F7" />
-            <Text style={styles.logoutButtonText}>Sign Out</Text>
-          </TouchableOpacity>
-        </View>
+        {/* Spacer */}
+        <View style={styles.spacer} />
+
+        {/* Log Out Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <AntDesign name="logout" size={20} color="#FFFFFF" />
+          <Text style={styles.logoutText}>Log out</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -164,124 +209,128 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0E87E2", // Blue background
+    backgroundColor: "#0E87E2",
   },
   header: {
+    alignItems: "center",
+    paddingVertical: 30,
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
   },
   title: {
     fontSize: RFValue(28),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
+    color: "#FFFFFF",
+    marginBottom: 8,
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: RFValue(18),
+    fontFamily: "SemiBold",
+    color: "#333",
+  },
+  placeholder: {
+    width: 40,
+  },
+  premiumCard: {
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 20,
+    marginTop: 0,
+    marginBottom: 30,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  premiumTitle: {
+    fontSize: RFValue(18),
+    fontFamily: "SemiBold",
+    color: "#0E87E2",
     marginBottom: 4,
   },
-  subtitle: {
-    fontSize: RFValue(16),
+  premiumSubtitle: {
+    fontSize: RFValue(14),
     fontFamily: "Regular",
-    color: "#C8D2E0", // Lightest Blue
+    color: "#666",
+    marginBottom: 16,
+  },
+  premiumButton: {
+    backgroundColor: "#0E87E2",
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignSelf: "flex-start",
+  },
+  premiumButtonText: {
+    fontSize: RFValue(14),
+    fontFamily: "SemiBold",
+    color: "#FFFFFF",
   },
   section: {
-    paddingHorizontal: 20,
     marginBottom: 30,
   },
   sectionTitle: {
-    fontSize: RFValue(18),
+    fontSize: RFValue(16),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
-    marginBottom: 16,
-  },
-  profileCard: {
-    backgroundColor: "#F7F7F7", // Extra Light Gray
-    borderRadius: 16,
-    padding: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    shadowColor: "#0A1424", // Deepest Blue
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  avatarContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#C8D2E0", // Lightest Blue
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 16,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    fontSize: RFValue(18),
-    fontFamily: "SemiBold",
-    color: "#3D3D3D", // Extra Dark Gray
-    marginBottom: 4,
-  },
-  profileEmail: {
-    fontSize: RFValue(14),
-    fontFamily: "Regular",
-    color: "#7A7A7A", // Dark Gray
+    color: "#FFFFFF",
+    marginBottom: 12,
+    marginHorizontal: 20,
   },
   settingsGroup: {
-    backgroundColor: "#F7F7F7", // Extra Light Gray
-    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 20,
+    borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#0A1424", // Deepest Blue
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
   },
   settingItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E1E1E1", // Primary Light Gray
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   settingLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
   },
   settingText: {
     fontSize: RFValue(16),
     fontFamily: "Regular",
-    color: "#3D3D3D", // Extra Dark Gray
+    color: "#333",
+    marginLeft: 12,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#E5E5E5",
+    marginLeft: 48,
+  },
+  spacer: {
+    flex: 1,
+    minHeight: 40,
   },
   logoutButton: {
-    backgroundColor: "#DC3545", // Error Red
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
-    shadowColor: "#0A1424", // Deepest Blue
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    paddingVertical: 16,
+    marginHorizontal: 20,
+    marginBottom: 100,
+    backgroundColor: "#DC3545",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  logoutButtonText: {
+  logoutText: {
     fontSize: RFValue(16),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
+    color: "#FFFFFF",
+    marginLeft: 8,
   },
 });
