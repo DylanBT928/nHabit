@@ -12,7 +12,6 @@ import {
 import { RFValue } from "react-native-responsive-fontsize";
 import { useOAuth, useUser, useAuth } from "@clerk/clerk-expo";
 import { AntDesign } from "@expo/vector-icons";
-// Using solid color background for modern look
 
 const { width, height } = Dimensions.get("window");
 
@@ -117,63 +116,60 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.backgroundGradient}>
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.contentContainer}>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.contentContainer}>
+          {/* Logo and Brand Section */}
+          <View style={styles.logoSection}>
             <View style={styles.logoContainer}>
-              <View style={styles.logoWrapper}>
-                <Image
-                  source={require("../assets/icons/logo.png")}
-                  style={styles.logo}
-                />
-              </View>
-              <Text style={styles.brandName}>nHabit</Text>
+              <Image
+                source={require("../assets/icons/logo.png")}
+                style={styles.logo}
+              />
             </View>
-
-            <View style={styles.card}>
-              <Text style={styles.title}>Welcome Back</Text>
-              <Text style={styles.subtitle}>
-                Stay connected with your family and friends through secure
-                location sharing.
-              </Text>
-
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.buttonGoogle}
-                  onPress={() => onPress("google")}
-                >
-                  <View style={styles.buttonContent}>
-                    <Image
-                      style={styles.googleIcon}
-                      source={require("../assets/icons/google.png")}
-                    />
-                    <Text style={styles.buttonTextGoogle}>
-                      Continue with Google
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.buttonApple}
-                  onPress={() => onPress("apple")}
-                >
-                  <View style={styles.buttonContent}>
-                    <AntDesign name="apple1" size={24} color="#F7F7F7" />
-                    <Text style={styles.buttonTextApple}>
-                      Continue with Apple
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.signupContainer}>
-                <Text style={styles.signupText}>New user? </Text>
-                <Text style={styles.signupLink}>Get started above.</Text>
-              </View>
-            </View>
+            <Text style={styles.brandName}>nHabit</Text>
           </View>
-        </SafeAreaView>
-      </View>
+
+          {/* Spacer to push buttons to bottom */}
+          <View style={styles.spacer} />
+
+          {/* Authentication Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.buttonGoogle}
+              onPress={() => onPress("google")}
+            >
+              <View style={styles.buttonContent}>
+                <Image
+                  style={styles.googleIcon}
+                  source={require("../assets/icons/google.png")}
+                />
+                <Text style={styles.buttonTextGoogle}>
+                  Continue with Google
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.buttonApple}
+              onPress={() => onPress("apple")}
+            >
+              <View style={styles.buttonContent}>
+                <AntDesign name="apple1" size={24} color="#000000" />
+                <Text style={styles.buttonTextApple}>Continue with Apple</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* Terms and Privacy */}
+          <View style={styles.termsContainer}>
+            <Text style={styles.termsText}>
+              By using this app, you agree to nHabit's{"\n"}
+              <Text style={styles.termsLink}>Terms of Use</Text> and{" "}
+              <Text style={styles.termsLink}>Privacy Policy</Text>
+            </Text>
+          </View>
+        </View>
+      </SafeAreaView>
     </View>
   );
 };
@@ -181,105 +177,54 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#172F50", // Primary Deep Navy - fallback color
-  },
-  backgroundGradient: {
-    flex: 1,
-    backgroundColor: "#172F50", // Primary Deep Navy
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: "100%",
-    height: "100%",
+    backgroundColor: "#0E87E2",
   },
   safeArea: {
     flex: 1,
   },
   contentContainer: {
     flex: 1,
-    justifyContent: "flex-start",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingHorizontal: 32,
+    paddingTop: 60,
     paddingBottom: 40,
   },
-  logoContainer: {
+  logoSection: {
     alignItems: "center",
-    marginBottom: 30,
-    marginTop: 20,
+    marginBottom: 40,
   },
-  logoWrapper: {
+  logoContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  logo: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "rgba(200, 210, 224, 0.3)", // Lightest Blue with transparency
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 12,
-    shadowColor: "#0A1424", // Deepest Blue
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  logo: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
   },
   brandName: {
-    fontSize: RFValue(28),
+    fontSize: RFValue(32),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
+    color: "#FFFFFF",
     letterSpacing: 1,
   },
-  card: {
-    backgroundColor: "#F7F7F7", // Extra Light Gray
-    borderRadius: 24,
-    padding: 32,
-    width: width - 40,
-    shadowColor: "#0A1424", // Deepest Blue
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 20,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: RFValue(26),
-    fontFamily: "SemiBold",
-    color: "#3D3D3D", // Extra Dark Gray
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: RFValue(15),
-    color: "#7A7A7A", // Dark Gray
-    fontFamily: "Regular",
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: 32,
-    paddingHorizontal: 10,
+  spacer: {
+    flex: 1,
   },
   buttonContainer: {
     width: "100%",
-    marginBottom: 24,
+    marginBottom: 32,
   },
   buttonGoogle: {
-    backgroundColor: "#E1E1E1", // Primary Light Gray
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: "#B3B3B3", // Medium Gray
+    backgroundColor: "#FFFFFF",
+    borderRadius: 25,
     marginBottom: 16,
-    shadowColor: "#0A1424", // Deepest Blue
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -289,14 +234,14 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   buttonApple: {
-    backgroundColor: "#0F1E35", // Dark Blue
-    borderRadius: 16,
-    shadowColor: "#0A1424", // Deepest Blue
+    backgroundColor: "#FFFFFF",
+    borderRadius: 25,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -315,81 +260,29 @@ const styles = StyleSheet.create({
   buttonTextGoogle: {
     fontSize: RFValue(16),
     fontFamily: "SemiBold",
-    color: "#3D3D3D", // Extra Dark Gray
+    color: "#000000",
   },
   buttonTextApple: {
     fontSize: RFValue(16),
     fontFamily: "SemiBold",
-    color: "#F7F7F7", // Extra Light Gray
+    color: "#000000",
     marginLeft: 12,
   },
-
-  signupContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 16,
-  },
-  signupText: {
-    fontSize: RFValue(14),
-    fontFamily: "Regular",
-    color: "#7A7A7A", // Dark Gray
-  },
-  signupLink: {
-    fontSize: RFValue(14),
-    fontFamily: "SemiBold",
-    color: "#6D8AAF", // Lighter Blue
-  },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 16,
-    fontFamily: "Regular",
-    fontSize: RFValue(14),
-  },
-  buttonEmail: {
-    backgroundColor: "#0D87E1",
-    padding: 15,
-    borderRadius: 10,
-    width: "100%",
-    marginBottom: 24,
-    minHeight: 44,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "#FFF",
-    fontFamily: "SemiBold",
-    fontSize: RFValue(14),
-  },
-  buttonTextWithIcon: {
-    marginLeft: 10,
-  },
-  dividerContainer: {
-    flexDirection: "row",
+  termsContainer: {
     alignItems: "center",
-    width: "100%",
-    marginBottom: 24,
+    paddingHorizontal: 20,
   },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#000",
+  termsText: {
+    fontSize: RFValue(11),
+    fontFamily: "Regular",
+    color: "#FFFFFF",
+    textAlign: "center",
+    lineHeight: 18,
+    opacity: 0.8,
   },
-  dividerText: {
-    marginHorizontal: 10,
-    color: "#000",
-    fontFamily: "Medium",
-  },
-
-  errorText: {
-    fontSize: RFValue(14),
-    color: "tomato",
-    fontFamily: "Medium",
-    alignSelf: "flex-start",
-    marginBottom: 8,
-    marginLeft: 4,
+  termsLink: {
+    color: "#000000",
+    textDecorationLine: "underline",
   },
 });
 
