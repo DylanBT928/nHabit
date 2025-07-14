@@ -48,7 +48,7 @@ export default function MapScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0E87E2",
+    backgroundColor: "#c8f1fa",
   },
   searchContainer: {
     paddingHorizontal: 20,
@@ -95,14 +95,14 @@ const styles = StyleSheet.create({
   placeholderTitle: {
     fontSize: RFValue(20),
     fontFamily: "SemiBold",
-    color: "#FFFFFF",
+    color: "#141819",
     marginTop: 16,
     marginBottom: 8,
   },
   placeholderSubtitle: {
     fontSize: RFValue(14),
     fontFamily: "Regular",
-    color: "#FFFFFF",
+    color: "#141819",
     opacity: 0.8,
     textAlign: "center",
     paddingHorizontal: 40,

@@ -215,7 +215,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0E87E2", // Blue background
+    backgroundColor: "#c8f1fa",
   },
   header: {
     alignItems: "center",
@@ -225,12 +225,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: RFValue(28),
     fontFamily: "SemiBold",
-    color: "#FFFFFF",
+    color: "#141819",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: RFValue(16),
-    color: "#FFFFFF",
+    color: "#141819",
     fontFamily: "Regular",
     textAlign: "center",
     opacity: 0.9,
@@ -285,12 +285,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: RFValue(20),
     fontFamily: "SemiBold",
-    color: "#FFFFFF",
+    color: "#141819",
   },
   sectionCount: {
     fontSize: RFValue(16),
     fontFamily: "Medium",
-    color: "#FFFFFF",
+    color: "#141819",
     opacity: 0.8,
   },
   emptyState: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: RFValue(14),
-    color: "#FFFFFF",
+    color: "#141819",
     opacity: 0.7,
     fontFamily: "Regular",
   },

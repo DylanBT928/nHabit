@@ -177,7 +177,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0E87E2",
+    backgroundColor: "#c8f1fa",
   },
   safeArea: {
     flex: 1,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   brandName: {
     fontSize: RFValue(32),
     fontFamily: "SemiBold",
-    color: "#FFFFFF",
+    color: "#141819",
     letterSpacing: 1,
   },
   spacer: {

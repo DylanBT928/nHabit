@@ -209,7 +209,7 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0E87E2",
+    backgroundColor: "#c8f1fa",
   },
   header: {
     alignItems: "center",
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: RFValue(28),
     fontFamily: "SemiBold",
-    color: "#FFFFFF",
+    color: "#141819",
     marginBottom: 8,
   },
   backButton: {
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: RFValue(16),
     fontFamily: "SemiBold",
-    color: "#FFFFFF",
+    color: "#141819",
     marginBottom: 12,
     marginHorizontal: 20,
   },

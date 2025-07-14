@@ -30,11 +30,11 @@ export default function App() {
   return (
     <ConvexClientProvider>
       <View style={{ flex: 1 }}>
-        <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#0D87E1" }}>
+        <View style={{ height: STATUS_BAR_HEIGHT, backgroundColor: "#c8f1fa" }}>
           <StatusBar
             translucent
-            backgroundColor={"#0D87E1"}
-            barStyle="light-content"
+            backgroundColor={"#c8f1fa"}
+            barStyle="dark-content"
           />
         </View>
         <Navigation />
