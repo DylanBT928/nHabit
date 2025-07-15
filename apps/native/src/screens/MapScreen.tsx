@@ -5,10 +5,10 @@ import {
   TextInput,
   SafeAreaView,
   Dimensions,
-  Text,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
+import { WebView } from "react-native-webview";
 
 const { width, height } = Dimensions.get("window");
 
@@ -31,15 +31,12 @@ export default function MapScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Map Area with Placeholder */}
+      {/* Map Area with WebView */}
       <View style={styles.mapArea}>
-        <View style={styles.mapPlaceholder}>
-          <AntDesign name="enviromento" size={48} color="#FFFFFF" />
-          <Text style={styles.placeholderTitle}>Map View</Text>
-          <Text style={styles.placeholderSubtitle}>
-            Interactive map will be displayed here
-          </Text>
-        </View>
+        <WebView
+          source={{ uri: "https://www.openstreetmap.org" }}
+          style={{ flex: 1 }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -82,29 +79,5 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     borderRadius: 16,
     overflow: "hidden",
-  },
-  mapPlaceholder: {
-    flex: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.3)",
-    borderStyle: "dashed",
-  },
-  placeholderTitle: {
-    fontSize: RFValue(20),
-    fontFamily: "SemiBold",
-    color: "#FFFFFF",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  placeholderSubtitle: {
-    fontSize: RFValue(14),
-    fontFamily: "Regular",
-    color: "#FFFFFF",
-    opacity: 0.8,
-    textAlign: "center",
-    paddingHorizontal: 40,
   },
 });
