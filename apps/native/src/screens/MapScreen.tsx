@@ -5,6 +5,7 @@ import {
   TextInput,
   SafeAreaView,
   Dimensions,
+  Keyboard,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,6 +15,31 @@ const { width, height } = Dimensions.get("window");
 
 export default function MapScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [mapUrl, setMapUrl] = useState("https://www.openstreetmap.org");
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchQuery
+        )}`
+      );
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        // Center the map on the found location
+        setMapUrl(
+          `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`
+        );
+        Keyboard.dismiss();
+      } else {
+        alert("Location not found.");
+      }
+    } catch (e) {
+      alert("Error searching location.");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,6 +53,8 @@ export default function MapScreen({ navigation }) {
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholderTextColor="#999"
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
           />
         </View>
       </View>
@@ -34,7 +62,7 @@ export default function MapScreen({ navigation }) {
       {/* Map Area with WebView */}
       <View style={styles.mapArea}>
         <WebView
-          source={{ uri: "https://www.openstreetmap.org" }}
+          source={{ uri: mapUrl }}
           style={{ flex: 1 }}
         />
       </View>
