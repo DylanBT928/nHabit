@@ -8,4 +8,11 @@ export default defineSchema({
     content: v.string(),
     summary: v.optional(v.string()),
   }),
+  locations: defineTable({
+    userId: v.string(),
+    name: v.string(),
+    lat: v.string(),
+    lon: v.string(),
+    description: v.optional(v.string()),
+  }),
 });

@@ -5,15 +5,64 @@ import {
   TextInput,
   SafeAreaView,
   Dimensions,
+  Keyboard,
+  TouchableOpacity,
   Text,
+  FlatList,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
+import { WebView } from "react-native-webview";
 
 const { width, height } = Dimensions.get("window");
 
 export default function MapScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [mapUrl, setMapUrl] = useState("https://www.openstreetmap.org");
+  const [lastSearched, setLastSearched] = useState(null); // { name, lat, lon }
+  const [savedLocations, setSavedLocations] = useState([]);
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchQuery
+        )}`
+      );
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const { lat, lon, display_name } = data[0];
+        setMapUrl(
+          `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`
+        );
+        setLastSearched({ name: display_name, lat, lon });
+        Keyboard.dismiss();
+      } else {
+        alert("Location not found.");
+      }
+    } catch (e) {
+      alert("Error searching location.");
+    }
+  };
+
+  const handleSaveLocation = () => {
+    if (
+      lastSearched &&
+      !savedLocations.some(
+        (loc) => loc.lat === lastSearched.lat && loc.lon === lastSearched.lon
+      )
+    ) {
+      setSavedLocations([...savedLocations, lastSearched]);
+    }
+  };
+
+  const handleSelectSaved = (loc) => {
+    setMapUrl(
+      `https://www.openstreetmap.org/?mlat=${loc.lat}&mlon=${loc.lon}#map=15/${loc.lat}/${loc.lon}`
+    );
+    setSearchQuery(loc.name);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,19 +76,42 @@ export default function MapScreen({ navigation }) {
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholderTextColor="#999"
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
           />
+          {/* Save button appears if a search was made */}
+          {lastSearched && (
+            <TouchableOpacity onPress={handleSaveLocation} style={styles.saveButton}>
+              <AntDesign name="save" size={20} color="#0E87E2" />
+            </TouchableOpacity>
+          )}
         </View>
+        {/* Saved Locations List */}
+        {savedLocations.length > 0 && (
+          <FlatList
+            data={savedLocations}
+            keyExtractor={(item) => `${item.lat},${item.lon}`}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.savedItem}
+                onPress={() => handleSelectSaved(item)}
+              >
+                <AntDesign name="enviromento" size={16} color="#0E87E2" />
+                <Text style={styles.savedText} numberOfLines={1}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.savedList}
+          />
+        )}
       </View>
 
-      {/* Map Area with Placeholder */}
+      {/* Map Area with WebView */}
       <View style={styles.mapArea}>
-        <View style={styles.mapPlaceholder}>
-          <AntDesign name="enviromento" size={48} color="#FFFFFF" />
-          <Text style={styles.placeholderTitle}>Map View</Text>
-          <Text style={styles.placeholderSubtitle}>
-            Interactive map will be displayed here
-          </Text>
-        </View>
+        <WebView source={{ uri: mapUrl }} style={{ flex: 1 }} />
       </View>
     </SafeAreaView>
   );
@@ -83,28 +155,28 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
   },
-  mapPlaceholder: {
-    flex: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    justifyContent: "center",
+  saveButton: {
+    marginLeft: 8,
+    padding: 4,
+  },
+  savedList: {
+    marginTop: 8,
+    marginLeft: 4,
+  },
+  savedItem: {
+    flexDirection: "row",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.3)",
-    borderStyle: "dashed",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginRight: 8,
+    elevation: 2,
   },
-  placeholderTitle: {
-    fontSize: RFValue(20),
-    fontFamily: "SemiBold",
-    color: "#141819",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  placeholderSubtitle: {
-    fontSize: RFValue(14),
-    fontFamily: "Regular",
-    color: "#141819",
-    opacity: 0.8,
-    textAlign: "center",
-    paddingHorizontal: 40,
+  savedText: {
+    marginLeft: 6,
+    maxWidth: 180,
+    color: "#0E87E2",
+    fontSize: RFValue(13),
   },
 });
