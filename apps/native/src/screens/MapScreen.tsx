@@ -6,6 +6,9 @@ import {
   SafeAreaView,
   Dimensions,
   Keyboard,
+  TouchableOpacity,
+  Text,
+  FlatList,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
@@ -16,6 +19,8 @@ const { width, height } = Dimensions.get("window");
 export default function MapScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [mapUrl, setMapUrl] = useState("https://www.openstreetmap.org");
+  const [lastSearched, setLastSearched] = useState(null); // { name, lat, lon }
+  const [savedLocations, setSavedLocations] = useState([]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -27,11 +32,11 @@ export default function MapScreen({ navigation }) {
       );
       const data = await response.json();
       if (data && data.length > 0) {
-        const { lat, lon } = data[0];
-        // Center the map on the found location
+        const { lat, lon, display_name } = data[0];
         setMapUrl(
           `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`
         );
+        setLastSearched({ name: display_name, lat, lon });
         Keyboard.dismiss();
       } else {
         alert("Location not found.");
@@ -39,6 +44,24 @@ export default function MapScreen({ navigation }) {
     } catch (e) {
       alert("Error searching location.");
     }
+  };
+
+  const handleSaveLocation = () => {
+    if (
+      lastSearched &&
+      !savedLocations.some(
+        (loc) => loc.lat === lastSearched.lat && loc.lon === lastSearched.lon
+      )
+    ) {
+      setSavedLocations([...savedLocations, lastSearched]);
+    }
+  };
+
+  const handleSelectSaved = (loc) => {
+    setMapUrl(
+      `https://www.openstreetmap.org/?mlat=${loc.lat}&mlon=${loc.lon}#map=15/${loc.lat}/${loc.lon}`
+    );
+    setSearchQuery(loc.name);
   };
 
   return (
@@ -56,15 +79,39 @@ export default function MapScreen({ navigation }) {
             onSubmitEditing={handleSearch}
             returnKeyType="search"
           />
+          {/* Save button appears if a search was made */}
+          {lastSearched && (
+            <TouchableOpacity onPress={handleSaveLocation} style={styles.saveButton}>
+              <AntDesign name="save" size={20} color="#0E87E2" />
+            </TouchableOpacity>
+          )}
         </View>
+        {/* Saved Locations List */}
+        {savedLocations.length > 0 && (
+          <FlatList
+            data={savedLocations}
+            keyExtractor={(item) => `${item.lat},${item.lon}`}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.savedItem}
+                onPress={() => handleSelectSaved(item)}
+              >
+                <AntDesign name="enviromento" size={16} color="#0E87E2" />
+                <Text style={styles.savedText} numberOfLines={1}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.savedList}
+          />
+        )}
       </View>
 
       {/* Map Area with WebView */}
       <View style={styles.mapArea}>
-        <WebView
-          source={{ uri: mapUrl }}
-          style={{ flex: 1 }}
-        />
+        <WebView source={{ uri: mapUrl }} style={{ flex: 1 }} />
       </View>
     </SafeAreaView>
   );
@@ -107,5 +154,29 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     borderRadius: 16,
     overflow: "hidden",
+  },
+  saveButton: {
+    marginLeft: 8,
+    padding: 4,
+  },
+  savedList: {
+    marginTop: 8,
+    marginLeft: 4,
+  },
+  savedItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginRight: 8,
+    elevation: 2,
+  },
+  savedText: {
+    marginLeft: 6,
+    maxWidth: 180,
+    color: "#0E87E2",
+    fontSize: RFValue(13),
   },
 });

@@ -68,3 +68,24 @@ export const deleteNote = mutation({
     await ctx.db.delete(args.noteId);
   },
 });
+
+export const saveLocation = mutation({
+  args: {
+    name: v.string(),
+    lat: v.string(),
+    lon: v.string(),
+    description: v.optional(v.string()),
+  },
+  handler: async (ctx, { name, lat, lon, description }) => {
+    const userId = await getUserId(ctx);
+    if (!userId) throw new Error("User not found");
+    const locationId = await ctx.db.insert("locations", {
+      userId,
+      name,
+      lat,
+      lon,
+      description,
+    });
+    return locationId;
+  },
+});

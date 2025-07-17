@@ -11,6 +11,9 @@ importers:
       expo-linear-gradient:
         specifier: ^14.1.5
         version: 14.1.5(expo@53.0.17(@babel/core@7.28.0)(react-native-webview@13.13.5(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react-native-webview:
+        specifier: 13.13.5
+        version: 13.13.5(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
     devDependencies:
       prettier:
         specifier: ^3.2.5
