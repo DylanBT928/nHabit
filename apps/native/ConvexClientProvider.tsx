@@ -6,6 +6,10 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 
 const convexUrl = process.env.EXPO_PUBLIC_CONVEX_URL;
 
+if (!convexUrl) {
+  throw new Error("Missing EXPO_PUBLIC_CONVEX_URL environment variable");
+}
+
 const convex = new ConvexReactClient(convexUrl);
 
 export default function ConvexClientProvider({ children }) {
