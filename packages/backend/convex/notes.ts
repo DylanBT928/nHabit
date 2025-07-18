@@ -75,8 +75,9 @@ export const saveLocation = mutation({
     lat: v.string(),
     lon: v.string(),
     description: v.optional(v.string()),
+    category: v.string(),
   },
-  handler: async (ctx, { name, lat, lon, description }) => {
+  handler: async (ctx, { name, lat, lon, description, category }) => {
     const userId = await getUserId(ctx);
     if (!userId) throw new Error("User not found");
     const locationId = await ctx.db.insert("locations", {
@@ -85,7 +86,21 @@ export const saveLocation = mutation({
       lat,
       lon,
       description,
+      category,
     });
     return locationId;
+  },
+});
+
+export const getLocations = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getUserId(ctx);
+    if (!userId) return [];
+    const locations = await ctx.db
+      .query("locations")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
+    return locations;
   },
 });

@@ -14,5 +14,6 @@ export default defineSchema({
     lat: v.string(),
     lon: v.string(),
     description: v.optional(v.string()),
+    category: v.string(),
   }),
 });

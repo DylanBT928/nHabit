@@ -9,10 +9,14 @@ import {
   TouchableOpacity,
   Text,
   FlatList,
+  Alert,
+  Modal,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
+import { useMutation } from "convex/react";
+import { api } from "@packages/backend/convex/_generated/api";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,6 +25,9 @@ export default function MapScreen({ navigation }) {
   const [mapUrl, setMapUrl] = useState("https://www.openstreetmap.org");
   const [lastSearched, setLastSearched] = useState(null); // { name, lat, lon }
   const [savedLocations, setSavedLocations] = useState([]);
+  const saveLocation = useMutation(api.notes.saveLocation);
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("to visit");
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -53,7 +60,24 @@ export default function MapScreen({ navigation }) {
         (loc) => loc.lat === lastSearched.lat && loc.lon === lastSearched.lon
       )
     ) {
-      setSavedLocations([...savedLocations, lastSearched]);
+      setCategoryModalVisible(true);
+    }
+  };
+
+  const handleConfirmSave = async () => {
+    try {
+      await saveLocation({
+        name: lastSearched.name,
+        lat: String(lastSearched.lat),
+        lon: String(lastSearched.lon),
+        category: selectedCategory,
+      });
+      setSavedLocations([...savedLocations, { ...lastSearched, category: selectedCategory }]);
+      setCategoryModalVisible(false);
+      Alert.alert("Location Saved", "Location has been saved to your account.");
+    } catch (e) {
+      setCategoryModalVisible(false);
+      Alert.alert("Error", "Failed to save location.");
     }
   };
 
@@ -113,6 +137,50 @@ export default function MapScreen({ navigation }) {
       <View style={styles.mapArea}>
         <WebView source={{ uri: mapUrl }} style={{ flex: 1 }} />
       </View>
+
+      {/* Category Modal */}
+      <Modal
+        visible={categoryModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setCategoryModalVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.3)" }}>
+          <View style={{ backgroundColor: "#fff", borderRadius: 16, padding: 24, width: 300 }}>
+            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 16 }}>Select Category</Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: selectedCategory === "to visit" ? "#0E87E2" : "#eee",
+                padding: 12,
+                borderRadius: 8,
+                marginBottom: 12,
+              }}
+              onPress={() => setSelectedCategory("to visit")}
+            >
+              <Text style={{ color: selectedCategory === "to visit" ? "#fff" : "#0E87E2", fontWeight: "bold" }}>To Visit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: selectedCategory === "to avoid" ? "#0E87E2" : "#eee",
+                padding: 12,
+                borderRadius: 8,
+                marginBottom: 24,
+              }}
+              onPress={() => setSelectedCategory("to avoid")}
+            >
+              <Text style={{ color: selectedCategory === "to avoid" ? "#fff" : "#0E87E2", fontWeight: "bold" }}>To Avoid</Text>
+            </TouchableOpacity>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              <TouchableOpacity onPress={() => setCategoryModalVisible(false)} style={{ marginRight: 16 }}>
+                <Text style={{ color: "#0E87E2", fontWeight: "bold" }}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleConfirmSave}>
+                <Text style={{ color: "#0E87E2", fontWeight: "bold" }}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

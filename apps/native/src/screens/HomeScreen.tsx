@@ -13,44 +13,16 @@ import {
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
+import { useQuery } from "convex/react";
+import { api } from "@packages/backend/convex/_generated/api";
 
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }) {
-  const [places, setPlaces] = useState([
-    { id: 1, name: "Gym", type: "visit" },
-    { id: 2, name: "McDonald's", type: "avoid" },
-  ]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [newPlaceName, setNewPlaceName] = useState("");
-  const [selectedType, setSelectedType] = useState("visit");
+  const locations = useQuery(api.notes.getLocations) || [];
 
-  const addPlace = () => {
-    if (newPlaceName.trim()) {
-      const newPlace = {
-        id: Date.now(),
-        name: newPlaceName.trim(),
-        type: selectedType,
-      };
-      setPlaces([...places, newPlace]);
-      setNewPlaceName("");
-      setModalVisible(false);
-    }
-  };
-
-  const removePlace = (id) => {
-    Alert.alert("Remove Place", "Are you sure you want to remove this place?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Remove",
-        style: "destructive",
-        onPress: () => setPlaces(places.filter((place) => place.id !== id)),
-      },
-    ]);
-  };
-
-  const visitPlaces = places.filter((place) => place.type === "visit");
-  const avoidPlaces = places.filter((place) => place.type === "avoid");
+  const visitPlaces = locations.filter((loc) => loc.category === "to visit");
+  const avoidPlaces = locations.filter((loc) => loc.category === "to avoid");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -58,15 +30,6 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.header}>
           <Text style={styles.title}>Habits</Text>
         </View>
-
-        {/* Add Place Button */}
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <AntDesign name="plus" size={24} color="#FFFFFF" />
-          <Text style={styles.addButtonText}>Add Place</Text>
-        </TouchableOpacity>
 
         {/* Visit Places Section */}
         <View style={styles.section}>
@@ -84,16 +47,13 @@ export default function HomeScreen({ navigation }) {
             </View>
           ) : (
             visitPlaces.map((place) => (
-              <View key={place.id} style={[styles.placeCard, styles.visitCard]}>
+              <View key={place._id} style={[styles.placeCard, styles.visitCard]}>
                 <View style={styles.placeInfo}>
                   <Text style={styles.placeName}>{place.name}</Text>
+                  {place.description ? (
+                    <Text style={styles.placeDescription}>{place.description}</Text>
+                  ) : null}
                 </View>
-                <TouchableOpacity
-                  onPress={() => removePlace(place.id)}
-                  style={styles.removeButton}
-                >
-                  <AntDesign name="close" size={20} color="#666" />
-                </TouchableOpacity>
               </View>
             ))
           )}
@@ -115,99 +75,18 @@ export default function HomeScreen({ navigation }) {
             </View>
           ) : (
             avoidPlaces.map((place) => (
-              <View key={place.id} style={[styles.placeCard, styles.avoidCard]}>
+              <View key={place._id} style={[styles.placeCard, styles.avoidCard]}>
                 <View style={styles.placeInfo}>
                   <Text style={styles.placeName}>{place.name}</Text>
+                  {place.description ? (
+                    <Text style={styles.placeDescription}>{place.description}</Text>
+                  ) : null}
                 </View>
-                <TouchableOpacity
-                  onPress={() => removePlace(place.id)}
-                  style={styles.removeButton}
-                >
-                  <AntDesign name="close" size={20} color="#666" />
-                </TouchableOpacity>
               </View>
             ))
           )}
         </View>
       </ScrollView>
-
-      {/* Add Place Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add New Place</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Enter place name"
-              value={newPlaceName}
-              onChangeText={setNewPlaceName}
-              autoFocus
-            />
-
-            {/* Type Selection */}
-            <View style={styles.typeSelection}>
-              <TouchableOpacity
-                style={[
-                  styles.typeButton,
-                  styles.visitButton,
-                  selectedType === "visit" && styles.selectedTypeButton,
-                ]}
-                onPress={() => setSelectedType("visit")}
-              >
-                <Text
-                  style={[
-                    styles.typeButtonText,
-                    selectedType === "visit" && styles.selectedTypeText,
-                  ]}
-                >
-                  Visit
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.typeButton,
-                  styles.avoidButton,
-                  selectedType === "avoid" && styles.selectedTypeButton,
-                ]}
-                onPress={() => setSelectedType("avoid")}
-              >
-                <Text
-                  style={[
-                    styles.typeButtonText,
-                    selectedType === "avoid" && styles.selectedTypeText,
-                  ]}
-                >
-                  Avoid
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Modal Actions */}
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => {
-                  setModalVisible(false);
-                  setNewPlaceName("");
-                }}
-              >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.confirmButton} onPress={addPlace}>
-                <Text style={styles.confirmButtonText}>Add Place</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -332,6 +211,11 @@ const styles = StyleSheet.create({
     fontSize: RFValue(16),
     fontFamily: "SemiBold",
     color: "#333",
+  },
+  placeDescription: {
+    fontSize: RFValue(14),
+    color: "#666",
+    marginTop: 4,
   },
   removeButton: {
     padding: 8,
