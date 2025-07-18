@@ -92,6 +92,15 @@ export const saveLocation = mutation({
   },
 });
 
+export const deleteLocation = mutation({
+  args: {
+    locationId: v.id("locations"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.locationId);
+  },
+});
+
 export const getLocations = query({
   args: {},
   handler: async (ctx) => {

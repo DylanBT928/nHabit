@@ -40,10 +40,11 @@ export default function MapScreen({ navigation }) {
       const data = await response.json();
       if (data && data.length > 0) {
         const { lat, lon, display_name } = data[0];
+        const mainName = display_name.split(",")[0]; // Only the first part
         setMapUrl(
           `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`
         );
-        setLastSearched({ name: display_name, lat, lon });
+        setLastSearched({ name: mainName, lat, lon });
         Keyboard.dismiss();
       } else {
         alert("Location not found.");

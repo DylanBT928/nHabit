@@ -15,6 +15,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { AntDesign } from "@expo/vector-icons";
 import { useQuery } from "convex/react";
 import { api } from "@packages/backend/convex/_generated/api";
+import { useMutation } from "convex/react";
 
 const { width } = Dimensions.get("window");
 
@@ -23,6 +24,16 @@ export default function HomeScreen({ navigation }) {
 
   const visitPlaces = locations.filter((loc) => loc.category === "to visit");
   const avoidPlaces = locations.filter((loc) => loc.category === "to avoid");
+
+  const deleteLocation = useMutation(api.notes.deleteLocation);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteLocation({ locationId: id });
+    } catch (e) {
+      Alert.alert("Error", "Failed to delete location.");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,10 +61,10 @@ export default function HomeScreen({ navigation }) {
               <View key={place._id} style={[styles.placeCard, styles.visitCard]}>
                 <View style={styles.placeInfo}>
                   <Text style={styles.placeName}>{place.name}</Text>
-                  {place.description ? (
-                    <Text style={styles.placeDescription}>{place.description}</Text>
-                  ) : null}
                 </View>
+                <TouchableOpacity onPress={() => handleDelete(place._id)} style={styles.removeButton}>
+                  <AntDesign name="close" size={20} color="#666" />
+                </TouchableOpacity>
               </View>
             ))
           )}
@@ -78,10 +89,10 @@ export default function HomeScreen({ navigation }) {
               <View key={place._id} style={[styles.placeCard, styles.avoidCard]}>
                 <View style={styles.placeInfo}>
                   <Text style={styles.placeName}>{place.name}</Text>
-                  {place.description ? (
-                    <Text style={styles.placeDescription}>{place.description}</Text>
-                  ) : null}
                 </View>
+                <TouchableOpacity onPress={() => handleDelete(place._id)} style={styles.removeButton}>
+                  <AntDesign name="close" size={20} color="#666" />
+                </TouchableOpacity>
               </View>
             ))
           )}
